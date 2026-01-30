@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Estacionamento Inteligente</title>
+  <link rel="stylesheet" href="css/estacionamento.css">
+</head>
+<body>
+  
+  <div id="login-screen" class="screen active">
+    <div class="login-container">
+      <div class="logo-section">
+        <div class="parking-logo">
+          <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+            <rect x="10" y="10" width="60" height="60" rx="8" stroke="#2979FF" stroke-width="3"/>
+            <text x="40" y="55" font-size="40" font-weight="bold" fill="#2979FF" text-anchor="middle">P</text>
+          </svg>
+        </div>
+        <h1>Sistema de Estacionamento</h1>
+      </div>
+
+      <div class="login-form-container">
+        <form id="login-form">
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <input type="email" id="email" placeholder="seu@email.com" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Senha</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <a href="#" class="forgot-password">Esqueci minha senha</a>
+          </div>
+
+          <button type="submit" class="btn-primary">Entrar</button>
+
+          <div class="login-type-toggle">
+            <button type="button" class="toggle-btn" id="user-mode">Usuário</button>
+            <button type="button" class="toggle-btn active" id="admin-mode">Administrador</button>
+          </div>
+        </form>
+      </div>
+
+      <footer class="login-footer">
+        <p>Estacionamento Inteligente © 2026</p>
+      </footer>
+    </div>
+  </div>
+
+  <div id="user-dashboard" class="screen">
+    <header class="dashboard-header">
+      <div class="header-left">
+        <h2>Olá, <span id="user-name">Usuário</span></h2>
+        <p class="header-subtitle">Bem-vindo ao estacionamento</p>
+      </div>
+      <button class="btn-logout" onclick="logout()">Sair</button>
+    </header>
+
+    <main class="user-content">
+      <div class="parking-map">
+        <h3>Mapa do Estacionamento</h3>
+        <div class="parking-grid" id="parking-grid">
+        </div>
+      </div>
+
+      <div class="reservation-panel">
+        <h3>Minhas Reservas</h3>
+        <div id="user-reservations" class="reservations-list">
+          <p class="empty-state">Você não tem reservas ativas</p>
+        </div>
+      </div>
+
+      <button class="btn-floating" onclick="showReservationModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </button>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+        <span>Início</span>
+      </button>
+      <button class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        <span>Vagas</span>
+      </button>
+      <button class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span>Perfil</span>
+      </button>
+    </nav>
+  </div>
+
+  <div id="admin-dashboard" class="screen">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="parking-logo-small">
+          <svg width="40" height="40" viewBox="0 0 80 80" fill="none">
+            <rect x="10" y="10" width="60" height="60" rx="8" stroke="#2979FF" stroke-width="3"/>
+            <text x="40" y="55" font-size="40" font-weight="bold" fill="#2979FF" text-anchor="middle">P</text>
+          </svg>
+        </div>
+        <h3>Admin</h3>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="sidebar-item active" onclick="showAdminSection('overview')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span>Visão Geral</span>
+        </button>
+        <button class="sidebar-item" onclick="showAdminSection('spots')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+            <polyline points="17 2 12 7 7 2"></polyline>
+          </svg>
+          <span>Vagas</span>
+        </button>
+        <button class="sidebar-item" onclick="showAdminSection('reservations')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Reservas</span>
+        </button>
+        <button class="sidebar-item" onclick="showAdminSection('users')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>Usuários</span>
+        </button>
+      </nav>
+
+      <button class="btn-logout sidebar-logout" onclick="logout()">Sair</button>
+    </aside>
+
+    <main class="admin-content">
+      <div id="admin-overview" class="admin-section active">
+        <h2>Visão Geral</h2>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <p class="stat-label">Total de Vagas</p>
+              <p class="stat-value" id="total-spots">50</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <p class="stat-label">Vagas Disponíveis</p>
+              <p class="stat-value" id="available-spots">32</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon red">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <p class="stat-label">Vagas Ocupadas</p>
+              <p class="stat-value" id="occupied-spots">18</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon yellow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <p class="stat-label">Usuários Ativos</p>
+              <p class="stat-value" id="active-users">18</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="recent-activity">
+          <h3>Atividade Recente</h3>
+          <div class="activity-list" id="activity-list">
+            <div class="activity-item">
+              <div class="activity-icon">🚗</div>
+              <div class="activity-details">
+                <p class="activity-text"><strong>João Silva</strong> reservou a vaga <strong>A-15</strong></p>
+                <p class="activity-time">há 5 minutos</p>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon">✓</div>
+              <div class="activity-details">
+                <p class="activity-text"><strong>Maria Santos</strong> liberou a vaga <strong>B-08</strong></p>
+                <p class="activity-time">há 12 minutos</p>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon">🚗</div>
+              <div class="activity-details">
+                <p class="activity-text"><strong>Pedro Costa</strong> reservou a vaga <strong>C-22</strong></p>
+                <p class="activity-time">há 23 minutos</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="admin-spots" class="admin-section">
+        <h2>Gerenciar Vagas</h2>
+        <div class="parking-grid admin-grid" id="admin-parking-grid"></div>
+      </div>
+
+      <div id="admin-reservations" class="admin-section">
+        <h2>Reservas Ativas</h2>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Usuário</th>
+                <th>Vaga</th>
+                <th>Horário</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="reservations-table">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="admin-users" class="admin-section">
+        <h2>Usuários Cadastrados</h2>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Reservas</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="users-table">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="reservation-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Nova Reserva</h3>
+        <button class="modal-close" onclick="closeReservationModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="reservation-form">
+          <div class="form-group">
+            <label for="spot-select">Selecione a Vaga</label>
+            <select id="spot-select" required>
+              <option value="">Escolha uma vaga disponível</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="duration">Duração (horas)</label>
+            <input type="number" id="duration" min="1" max="24" value="2" required>
+          </div>
+          <div class="reservation-summary">
+            <p><strong>Valor:</strong> R$ <span id="reservation-price">20,00</span></p>
+          </div>
+          <button type="submit" class="btn-primary">Confirmar Reserva</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirmation-modal" class="modal">
+    <div class="modal-content confirmation-content">
+      <div class="confirmation-icon">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <h2>Reserva Confirmada!</h2>
+      <div class="confirmation-details">
+        <p><strong>Vaga:</strong> <span id="confirmed-spot"></span></p>
+        <p><strong>Duração:</strong> <span id="confirmed-duration"></span> horas</p>
+        <p><strong>Valor:</strong> R$ <span id="confirmed-price"></span></p>
+        <p><strong>Válido até:</strong> <span id="confirmed-time"></span></p>
+      </div>
+      <button class="btn-primary" onclick="closeConfirmationModal()">Fechar</button>
+    </div>
+  </div>
+
+  <script src="script/estacionamento.js"></script>
+</body>
+</html>
